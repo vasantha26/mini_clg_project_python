@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Pending Fees Report - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Pending Fees Report</h1>
+
+{% if by_department %}
+<div class="dashboard-grid mb-3">
+    {% for dept_name, data in by_department.items() %}
+    <div class="stat-card">
+        <div class="stat-icon">🏛️</div>
+        <div class="stat-value">₹{{ "%.2f"|format(data.total) }}</div>
+        <div class="stat-label">{{ dept_name }}</div>
+        <small>{{ data.count }} students</small>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="card">
+    <div class="card-header">Detailed Pending Fees</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Fee Type</th>
+                        <th>Amount Due</th>
+                        <th>Paid</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in pending_fees %}
+                    <tr>
+                        <td>{{ fee.student.roll_number }}</td>
+                        <td>{{ fee.student.name }}</td>
+                        <td>{{ fee.student.department.name if fee.student.department else 'N/A' }}</td>
+                        <td>{{ fee.fee_structure.fee_type|title }}</td>
+                        <td>₹{{ "%.2f"|format(fee.amount_due) }}</td>
+                        <td>₹{{ "%.2f"|format(fee.amount_paid) }}</td>
+                        <td>₹{{ "%.2f"|format(fee.balance) }}</td>
+                        <td>
+                            <span class="badge badge-{% if fee.payment_status == 'pending' %}danger{% elif fee.payment_status == 'partial' %}warning{% else %}success{% endif %}">
+                                {{ fee.payment_status|title }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center">
+        <p>No pending fees found. All students are up to date!</p>
+    </div>
+</div>
+{% endif %}
+
+<a href="{{ url_for('fees.structure') }}" class="btn btn-secondary mt-2">Back to Fee Structure</a>
+<button class="btn btn-primary mt-2" data-print>Print Report</button>
+{% endblock %}

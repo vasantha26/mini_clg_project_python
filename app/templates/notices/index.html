@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Notice Board - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Notice Board</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" class="flex gap-2">
+            <select name="category" class="form-control" style="max-width: 150px;">
+                <option value="">All Categories</option>
+                <option value="general" {% if category == 'general' %}selected{% endif %}>General</option>
+                <option value="academic" {% if category == 'academic' %}selected{% endif %}>Academic</option>
+                <option value="event" {% if category == 'event' %}selected{% endif %}>Event</option>
+                <option value="exam" {% if category == 'exam' %}selected{% endif %}>Examination</option>
+                <option value="holiday" {% if category == 'holiday' %}selected{% endif %}>Holiday</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url_for('notices.index') }}" class="btn btn-secondary">Reset</a>
+        </form>
+    </div>
+</div>
+
+{% if notices %}
+{% for notice in notices %}
+<div class="card mb-3 {% if notice.priority == 'urgent' %}priority-urgent{% elif notice.priority == 'high' %}priority-high{% endif %}">
+    <div class="card-header flex-between">
+        <span>{{ notice.title }}</span>
+        <div>
+            <span class="badge badge-info">{{ notice.category|title }}</span>
+            {% if notice.priority in ['high', 'urgent'] %}
+            <span class="badge badge-{% if notice.priority == 'urgent' %}danger{% else %}warning{% endif %}">
+                {{ notice.priority|title }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <p>{{ notice.content[:200] }}{% if notice.content|length > 200 %}...{% endif %}</p>
+        <div class="flex-between">
+            <small class="text-muted">Posted: {{ notice.created_at.strftime('%d %b %Y') }}</small>
+            <a href="{{ url_for('notices.detail', id=notice.id) }}" class="btn btn-sm btn-primary">Read More</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card">
+    <div class="card-body text-center">
+        <p>No notices available.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

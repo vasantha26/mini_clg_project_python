@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Marks - College Management System{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-3">
+    <h1>Manage Marks</h1>
+    <a href="{{ url_for('marks.create_exam') }}" class="btn btn-primary">Create New Exam</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if exams %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Exam Name</th>
+                        <th>Subject</th>
+                        <th>Type</th>
+                        <th>Max Marks</th>
+                        <th>Year/Section</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exam in exams %}
+                    <tr>
+                        <td>{{ exam.name }}</td>
+                        <td>{{ exam.subject.name }}</td>
+                        <td><span class="badge badge-info">{{ exam.exam_type|title }}</span></td>
+                        <td>{{ exam.max_marks }}</td>
+                        <td>Year {{ exam.year }} - {{ exam.section }}</td>
+                        <td>{{ exam.date.strftime('%d %b %Y') if exam.date else 'TBA' }}</td>
+                        <td>
+                            <a href="{{ url_for('marks.enter', exam_id=exam.id) }}" class="btn btn-sm btn-primary">Enter Marks</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No exams created yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

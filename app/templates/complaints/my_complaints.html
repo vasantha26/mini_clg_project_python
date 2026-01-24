@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}My Complaints - College Management System{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-3">
+    <h1>My Complaints</h1>
+    <a href="{{ url_for('complaints.submit') }}" class="btn btn-primary">Submit New Complaint</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if complaints %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Subject</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ complaint.created_at.strftime('%d %b %Y') }}</td>
+                        <td>
+                            <span class="badge badge-{% if complaint.complaint_type == 'utility' %}primary{% else %}secondary{% endif %}">
+                                {{ complaint.complaint_type|title }}
+                            </span>
+                        </td>
+                        <td>{{ complaint.subject }}</td>
+                        <td>
+                            <span class="badge badge-{% if complaint.priority == 'high' %}danger{% elif complaint.priority == 'low' %}info{% else %}warning{% endif %}">
+                                {{ complaint.priority|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge badge-{% if complaint.status == 'resolved' %}success{% elif complaint.status == 'pending' %}warning{% elif complaint.status == 'closed' %}secondary{% else %}info{% endif %}">
+                                {{ complaint.status|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('complaints.detail', id=complaint.id) }}" class="btn btn-sm btn-primary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">You haven't submitted any complaints yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

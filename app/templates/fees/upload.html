@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Fees - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Assign Fees to Students</div>
+    <div class="card-body">
+        <p>Select a fee structure to assign to students matching the criteria.</p>
+
+        {% if fee_structures %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Academic Year</th>
+                        <th>Year</th>
+                        <th>Department</th>
+                        <th>Fee Type</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in fee_structures %}
+                    <tr>
+                        <td>{{ fee.academic_year }}</td>
+                        <td>Year {{ fee.year }}</td>
+                        <td>{{ fee.department.name if fee.department else 'All' }}</td>
+                        <td>{{ fee.fee_type|title }}</td>
+                        <td>₹{{ "%.2f"|format(fee.amount) }}</td>
+                        <td>{{ fee.due_date.strftime('%d %b %Y') }}</td>
+                        <td>
+                            <form method="POST" style="display: inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="fee_structure_id" value="{{ fee.id }}">
+                                <button type="submit" class="btn btn-sm btn-success">Assign</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No fee structures available. <a href="{{ url_for('fees.structure') }}">Create one first.</a></p>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{{ url_for('fees.structure') }}" class="btn btn-secondary mt-2">Back to Fee Structure</a>
+{% endblock %}

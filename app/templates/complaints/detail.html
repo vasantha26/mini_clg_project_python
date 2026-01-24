@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Complaint Details - College Management System{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header flex-between">
+        <span>Complaint #{{ complaint.id }}</span>
+        <span class="badge badge-{% if complaint.status == 'resolved' %}success{% elif complaint.status == 'pending' %}warning{% elif complaint.status == 'closed' %}secondary{% else %}info{% endif %}">
+            {{ complaint.status|title }}
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="flex-between mb-2">
+            <span class="badge badge-{% if complaint.complaint_type == 'utility' %}primary{% else %}secondary{% endif %}">
+                {{ complaint.complaint_type|title }}
+            </span>
+            <span class="badge badge-{% if complaint.priority == 'high' %}danger{% elif complaint.priority == 'low' %}info{% else %}warning{% endif %}">
+                Priority: {{ complaint.priority|title }}
+            </span>
+        </div>
+
+        <h3>{{ complaint.subject }}</h3>
+        <p class="mt-2">{{ complaint.description }}</p>
+
+        <hr>
+
+        <p><strong>Submitted by:</strong> {{ complaint.student.name }} ({{ complaint.student.roll_number }})</p>
+        <p><strong>Submitted on:</strong> {{ complaint.created_at.strftime('%d %b %Y at %H:%M') }}</p>
+        {% if complaint.resolved_at %}
+        <p><strong>Resolved on:</strong> {{ complaint.resolved_at.strftime('%d %b %Y at %H:%M') }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Responses</div>
+    <div class="card-body">
+        {% if responses %}
+        {% for response in responses %}
+        <div class="notification-item">
+            <div class="notification-content">
+                <div class="notification-title">{{ response.responder.get_display_name() }}</div>
+                <div class="notification-message">{{ response.message }}</div>
+                <div class="notification-time">{{ response.created_at.strftime('%d %b %Y at %H:%M') }}</div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center">No responses yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% if current_user.is_staff() or current_user.is_management() %}
+<div class="card">
+    <div class="card-header">Add Response</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.message.label }}
+                {{ form.message(class="form-control", rows=3, placeholder="Enter your response...") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.status.label }}
+                {{ form.status(class="form-control") }}
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<a href="javascript:history.back()" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

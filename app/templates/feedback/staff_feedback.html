@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}My Received Feedback - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Feedback Received</h1>
+
+<div class="stat-card mb-3" style="max-width: 300px;">
+    <div class="stat-icon">⭐</div>
+    <div class="stat-value">{{ "%.1f"|format(avg_rating) }}/5</div>
+    <div class="stat-label">Average Rating</div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if feedbacks %}
+        {% for feedback in feedbacks %}
+        <div class="notification-item">
+            <div class="notification-content" style="flex: 1;">
+                <div class="flex-between">
+                    <div class="notification-title">
+                        {% if feedback.is_anonymous %}
+                        Anonymous
+                        {% else %}
+                        {{ feedback.student.name if feedback.student else 'Unknown' }}
+                        {% endif %}
+                    </div>
+                    <div class="star-rating">
+                        {% for i in range(5) %}
+                        <span class="star {% if i < feedback.rating %}filled{% endif %}">★</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if feedback.subject %}
+                <small class="badge badge-info">{{ feedback.subject.name }}</small>
+                {% endif %}
+                <div class="notification-message mt-1">{{ feedback.content }}</div>
+                <div class="notification-time">{{ feedback.created_at.strftime('%d %b %Y at %H:%M') }}</div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center">No feedback received yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

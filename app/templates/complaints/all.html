@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}All Complaints - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">All Complaints</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" class="flex gap-2">
+            <select name="type" class="form-control" style="max-width: 150px;">
+                <option value="">All Types</option>
+                <option value="utility" {% if type_filter == 'utility' %}selected{% endif %}>Utility</option>
+                <option value="academic" {% if type_filter == 'academic' %}selected{% endif %}>Academic</option>
+            </select>
+            <select name="status" class="form-control" style="max-width: 150px;">
+                <option value="">All Status</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
+                <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
+                <option value="closed" {% if status_filter == 'closed' %}selected{% endif %}>Closed</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url_for('complaints.all') }}" class="btn btn-secondary">Reset</a>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if complaints %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Student</th>
+                        <th>Subject</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ complaint.created_at.strftime('%d %b %Y') }}</td>
+                        <td>
+                            <span class="badge badge-{% if complaint.complaint_type == 'utility' %}primary{% else %}secondary{% endif %}">
+                                {{ complaint.complaint_type|title }}
+                            </span>
+                        </td>
+                        <td>{{ complaint.student.name }}</td>
+                        <td>{{ complaint.subject[:30] }}{% if complaint.subject|length > 30 %}...{% endif %}</td>
+                        <td>
+                            <span class="badge badge-{% if complaint.priority == 'high' %}danger{% elif complaint.priority == 'low' %}info{% else %}warning{% endif %}">
+                                {{ complaint.priority|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge badge-{% if complaint.status == 'resolved' %}success{% elif complaint.status == 'pending' %}warning{% elif complaint.status == 'closed' %}secondary{% else %}info{% endif %}">
+                                {{ complaint.status|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('complaints.detail', id=complaint.id) }}" class="btn btn-sm btn-primary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No complaints found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

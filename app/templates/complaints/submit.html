@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Complaint - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Submit a Complaint</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.complaint_type.label }}
+                {{ form.complaint_type(class="form-control") }}
+                <small class="text-muted">Choose 'Utility' for infrastructure issues, 'Academic' for teaching-related concerns.</small>
+            </div>
+
+            <div class="form-group">
+                {{ form.subject.label }}
+                {{ form.subject(class="form-control", placeholder="Brief subject of your complaint") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.description.label }}
+                {{ form.description(class="form-control", rows=5, placeholder="Describe your complaint in detail...") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.priority.label }}
+                {{ form.priority(class="form-control") }}
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('complaints.my_complaints') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

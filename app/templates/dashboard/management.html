@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Management Dashboard - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Welcome, {{ management.name }}</h1>
+<p class="mb-3">Designation: {{ management.designation }}</p>
+
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-icon">👨‍🎓</div>
+        <div class="stat-value">{{ total_students }}</div>
+        <div class="stat-label">Total Students</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">👨‍🏫</div>
+        <div class="stat-value">{{ total_staff }}</div>
+        <div class="stat-label">Total Staff</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value">{{ pending_complaints }}</div>
+        <div class="stat-label">Pending Complaints</div>
+        {% if pending_complaints > 0 %}
+        <a href="{{ url_for('complaints.all') }}" class="btn btn-sm btn-warning mt-1">View All</a>
+        {% endif %}
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">₹{{ "%.2f"|format(pending_fees_sum) }}</div>
+        <div class="stat-label">Total Pending Fees</div>
+        <a href="{{ url_for('fees.pending_report') }}" class="btn btn-sm btn-primary mt-1">View Report</a>
+    </div>
+</div>
+
+<div class="dashboard-grid mt-3">
+    <div class="card">
+        <div class="card-header">Recent Complaints</div>
+        <div class="card-body">
+            {% if recent_complaints %}
+            {% for complaint in recent_complaints %}
+            <div class="notification-item">
+                <div class="notification-content">
+                    <div class="flex-between">
+                        <div class="notification-title">{{ complaint.subject }}</div>
+                        <span class="badge badge-{% if complaint.status == 'pending' %}warning{% elif complaint.status == 'resolved' %}success{% else %}info{% endif %}">
+                            {{ complaint.status|title }}
+                        </span>
+                    </div>
+                    <div class="notification-message">
+                        <span class="badge badge-{% if complaint.complaint_type == 'utility' %}primary{% else %}secondary{% endif %}">
+                            {{ complaint.complaint_type|title }}
+                        </span>
+                        {{ complaint.description[:50] }}...
+                    </div>
+                    <div class="notification-time">{{ complaint.created_at.strftime('%d %b %Y, %H:%M') }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="text-right mt-2">
+                <a href="{{ url_for('complaints.all') }}" class="btn btn-sm btn-primary">View All Complaints</a>
+            </div>
+            {% else %}
+            <p class="text-center">No recent complaints.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Recent Feedback</div>
+        <div class="card-body">
+            {% if recent_feedback %}
+            {% for fb in recent_feedback %}
+            <div class="notification-item">
+                <div class="notification-content">
+                    <div class="flex-between">
+                        <div class="notification-title">{{ fb.feedback_type|title }} Feedback</div>
+                        <div class="star-rating">
+                            {% for i in range(5) %}
+                            <span class="star {% if i < fb.rating %}filled{% endif %}">★</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="notification-message">{{ fb.content[:50] }}...</div>
+                    <div class="notification-time">{{ fb.created_at.strftime('%d %b %Y, %H:%M') }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="text-right mt-2">
+                <a href="{{ url_for('feedback.all') }}" class="btn btn-sm btn-primary">View All Feedback</a>
+            </div>
+            {% else %}
+            <p class="text-center">No recent feedback.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">Recent Notices</div>
+    <div class="card-body">
+        {% if recent_notices %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Priority</th>
+                    <th>Posted</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for notice in recent_notices %}
+                <tr>
+                    <td>{{ notice.title }}</td>
+                    <td>{{ notice.category|title }}</td>
+                    <td>
+                        <span class="badge badge-{% if notice.priority == 'urgent' %}danger{% elif notice.priority == 'high' %}warning{% else %}info{% endif %}">
+                            {{ notice.priority|title }}
+                        </span>
+                    </td>
+                    <td>{{ notice.created_at.strftime('%d %b %Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('notices.detail', id=notice.id) }}" class="btn btn-sm btn-primary">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No notices available.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="flex gap-2 mt-3">
+    <a href="{{ url_for('notices.create') }}" class="btn btn-primary">Post Notice</a>
+    <a href="{{ url_for('fees.structure') }}" class="btn btn-primary">Manage Fees</a>
+    <a href="{{ url_for('library.manage') }}" class="btn btn-primary">Manage Library</a>
+    <a href="{{ url_for('complaints.all') }}" class="btn btn-secondary">View All Complaints</a>
+    <a href="{{ url_for('feedback.all') }}" class="btn btn-secondary">View All Feedback</a>
+</div>
+{% endblock %}

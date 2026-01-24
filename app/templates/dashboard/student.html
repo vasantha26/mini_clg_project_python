@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Welcome, {{ student.name }}</h1>
+
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-value">{{ avg_attendance }}%</div>
+        <div class="stat-label">Average Attendance</div>
+        {% if avg_attendance < 75 %}
+        <div class="badge badge-danger mt-1">Below Required</div>
+        {% else %}
+        <div class="badge badge-success mt-1">Good Standing</div>
+        {% endif %}
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">₹{{ "%.2f"|format(total_pending_fees) }}</div>
+        <div class="stat-label">Pending Fees</div>
+        {% if total_pending_fees > 0 %}
+        <a href="{{ url_for('fees.my_fees') }}" class="btn btn-sm btn-warning mt-1">View Details</a>
+        {% endif %}
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value">{{ borrowed_books }}</div>
+        <div class="stat-label">Books Borrowed</div>
+        <a href="{{ url_for('library.my_books') }}" class="btn btn-sm btn-primary mt-1">My Books</a>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value">{{ pending_complaints }}</div>
+        <div class="stat-label">Open Complaints</div>
+        <a href="{{ url_for('complaints.my_complaints') }}" class="btn btn-sm btn-primary mt-1">View All</a>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">Subject-wise Attendance</div>
+    <div class="card-body">
+        {% if attendance_summaries %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Total Classes</th>
+                    <th>Attended</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for summary in attendance_summaries %}
+                <tr>
+                    <td>{{ summary.subject.name if summary.subject else 'N/A' }}</td>
+                    <td>{{ summary.total_classes }}</td>
+                    <td>{{ summary.attended }}</td>
+                    <td>
+                        <div class="progress" style="width: 150px;">
+                            <div class="progress-bar {% if summary.percentage >= 75 %}success{% elif summary.percentage >= 65 %}warning{% else %}danger{% endif %}"
+                                 style="width: {{ summary.percentage }}%"></div>
+                        </div>
+                        {{ "%.1f"|format(summary.percentage) }}%
+                    </td>
+                    <td>
+                        {% if summary.percentage >= 75 %}
+                        <span class="badge badge-success">Good</span>
+                        {% elif summary.percentage >= 65 %}
+                        <span class="badge badge-warning">Warning</span>
+                        {% else %}
+                        <span class="badge badge-danger">Critical</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No attendance records yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">Recent Notices</div>
+    <div class="card-body">
+        {% if recent_notices %}
+        {% for notice in recent_notices %}
+        <div class="notification-item {% if notice.priority == 'urgent' %}priority-urgent{% elif notice.priority == 'high' %}priority-high{% endif %}">
+            <div class="notification-content">
+                <div class="notification-title">{{ notice.title }}</div>
+                <div class="notification-message">{{ notice.content[:100] }}{% if notice.content|length > 100 %}...{% endif %}</div>
+                <div class="notification-time">{{ notice.created_at.strftime('%d %b %Y, %H:%M') }}</div>
+            </div>
+            <a href="{{ url_for('notices.detail', id=notice.id) }}" class="btn btn-sm btn-primary">Read</a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center">No notices available.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="flex gap-2 mt-3">
+    <a href="{{ url_for('attendance.my_attendance') }}" class="btn btn-primary">View Full Attendance</a>
+    <a href="{{ url_for('marks.my_results') }}" class="btn btn-primary">View Results</a>
+    <a href="{{ url_for('timetable.my_timetable') }}" class="btn btn-primary">View Timetable</a>
+    <a href="{{ url_for('complaints.submit') }}" class="btn btn-secondary">Submit Complaint</a>
+    <a href="{{ url_for('feedback.submit') }}" class="btn btn-secondary">Give Feedback</a>
+</div>
+{% endblock %}

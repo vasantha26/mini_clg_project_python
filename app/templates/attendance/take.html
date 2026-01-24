@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Take Attendance - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Create Attendance Session</div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('attendance.take') }}">
+            {{ form.hidden_tag() }}
+
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    {{ form.subject_id.label }}
+                    {{ form.subject_id(class="form-control") }}
+                    {% for error in form.subject_id.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.date.label }}
+                    {{ form.date(class="form-control") }}
+                    {% for error in form.date.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.period.label }}
+                    {{ form.period(class="form-control", min=1, max=8) }}
+                    {% for error in form.period.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.year.label }}
+                    {{ form.year(class="form-control") }}
+                    {% for error in form.year.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.section.label }}
+                    {{ form.section(class="form-control") }}
+                    {% for error in form.section.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('attendance.reports') }}" class="btn btn-secondary">View Reports</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}My Fees - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">My Fees</h1>
+<p class="mb-3">
+    <strong>{{ student.name }}</strong> | Roll No: {{ student.roll_number }}
+</p>
+
+<div class="dashboard-grid mb-3">
+    <div class="stat-card">
+        <div class="stat-icon">💳</div>
+        <div class="stat-value">₹{{ "%.2f"|format(total_due) }}</div>
+        <div class="stat-label">Total Due</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" style="color: #27ae60;">₹{{ "%.2f"|format(total_paid) }}</div>
+        <div class="stat-label">Total Paid</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value" style="color: {% if balance > 0 %}#e74c3c{% else %}#27ae60{% endif %};">
+            ₹{{ "%.2f"|format(balance) }}
+        </div>
+        <div class="stat-label">Balance</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Fee Details</div>
+    <div class="card-body">
+        {% if fees %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fee Type</th>
+                        <th>Academic Year</th>
+                        <th>Amount Due</th>
+                        <th>Amount Paid</th>
+                        <th>Balance</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in fees %}
+                    <tr>
+                        <td>{{ fee.fee_structure.fee_type|title }}</td>
+                        <td>{{ fee.fee_structure.academic_year }}</td>
+                        <td>₹{{ "%.2f"|format(fee.amount_due) }}</td>
+                        <td>₹{{ "%.2f"|format(fee.amount_paid) }}</td>
+                        <td>₹{{ "%.2f"|format(fee.balance) }}</td>
+                        <td>{{ fee.fee_structure.due_date.strftime('%d %b %Y') }}</td>
+                        <td>
+                            <span class="badge badge-{% if fee.payment_status == 'paid' %}success{% elif fee.payment_status == 'partial' %}warning{% else %}danger{% endif %}">
+                                {{ fee.payment_status|title }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No fee records found.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% if balance > 0 %}
+<div class="alert alert-warning mt-3">
+    You have pending fees of ₹{{ "%.2f"|format(balance) }}. Please pay at the college accounts office.
+</div>
+{% endif %}
+{% endblock %}

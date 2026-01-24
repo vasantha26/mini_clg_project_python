@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}My Attendance - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">My Attendance</h1>
+<p class="mb-3">
+    <strong>{{ student.name }}</strong> | Roll No: {{ student.roll_number }} |
+    Year {{ student.year }} - Section {{ student.section }}
+</p>
+
+{% if subjects_data %}
+{% for data in subjects_data %}
+<div class="card mb-3">
+    <div class="card-header flex-between">
+        <span>{{ data.summary.subject.name if data.summary.subject else 'Unknown Subject' }}</span>
+        <span class="badge badge-{% if data.summary.percentage >= 75 %}success{% elif data.summary.percentage >= 65 %}warning{% else %}danger{% endif %}">
+            {{ "%.1f"|format(data.summary.percentage) }}%
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="flex gap-2 mb-2">
+            <div class="stat-card" style="flex: 1; padding: 1rem;">
+                <div class="stat-value" style="font-size: 1.5rem;">{{ data.summary.total_classes }}</div>
+                <div class="stat-label">Total Classes</div>
+            </div>
+            <div class="stat-card" style="flex: 1; padding: 1rem;">
+                <div class="stat-value" style="font-size: 1.5rem; color: #27ae60;">{{ data.summary.attended }}</div>
+                <div class="stat-label">Attended</div>
+            </div>
+            <div class="stat-card" style="flex: 1; padding: 1rem;">
+                <div class="stat-value" style="font-size: 1.5rem; color: #e74c3c;">{{ data.summary.total_classes - data.summary.attended }}</div>
+                <div class="stat-label">Absent</div>
+            </div>
+        </div>
+
+        <div class="progress mb-2">
+            <div class="progress-bar {% if data.summary.percentage >= 75 %}success{% elif data.summary.percentage >= 65 %}warning{% else %}danger{% endif %}"
+                 style="width: {{ data.summary.percentage }}%"></div>
+        </div>
+
+        {% if data.summary.percentage < 75 %}
+        <div class="alert alert-warning">
+            Your attendance is below the required 75%. Please attend more classes.
+        </div>
+        {% endif %}
+
+        {% if data.records %}
+        <h4 class="mt-3">Recent Records</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Period</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in data.records %}
+                <tr>
+                    <td>{{ record.session.date.strftime('%d %b %Y') }}</td>
+                    <td>Period {{ record.session.period }}</td>
+                    <td>
+                        {% if record.is_present %}
+                        <span class="badge badge-success">Present</span>
+                        {% else %}
+                        <span class="badge badge-danger">Absent</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card">
+    <div class="card-body text-center">
+        <p>No attendance records available yet.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

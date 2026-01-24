@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Library - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Library Management</h1>
+
+<div class="dashboard-grid">
+    <div class="card">
+        <div class="card-header">Add New Book</div>
+        <div class="card-body">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.isbn.label }}
+                    {{ form.isbn(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.title.label }}
+                    {{ form.title(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.author.label }}
+                    {{ form.author(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.publisher.label }}
+                    {{ form.publisher(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.publication_year.label }}
+                    {{ form.publication_year(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.category.label }}
+                    {{ form.category(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.total_copies.label }}
+                    {{ form.total_copies(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.location.label }}
+                    {{ form.location(class="form-control") }}
+                </div>
+
+                {{ form.submit(class="btn btn-primary") }}
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Book Inventory</div>
+        <div class="card-body">
+            {% if books %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Available</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books[:10] %}
+                        <tr>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>{{ book.available_copies }}/{{ book.total_copies }}</td>
+                            <td>
+                                {% if book.is_available() %}
+                                <a href="{{ url_for('library.issue', book_id=book.id) }}" class="btn btn-sm btn-success">Issue</a>
+                                {% else %}
+                                <span class="badge badge-warning">All Issued</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center">No books in library yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

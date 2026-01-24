@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Student Details - College Management System{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header">Student Information</div>
+    <div class="card-body">
+        <div class="dashboard-grid">
+            <div>
+                <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+                <p><strong>Name:</strong> {{ student.name }}</p>
+                <p><strong>Email:</strong> {{ student.user.email }}</p>
+            </div>
+            <div>
+                <p><strong>Department:</strong> {{ student.department.name if student.department else 'N/A' }}</p>
+                <p><strong>Year:</strong> {{ student.year }}</p>
+                <p><strong>Semester:</strong> {{ student.semester }}</p>
+                <p><strong>Section:</strong> {{ student.section }}</p>
+            </div>
+            <div>
+                <p><strong>Phone:</strong> {{ student.phone or 'N/A' }}</p>
+                <p><strong>Admission Date:</strong> {{ student.admission_date.strftime('%d %b %Y') if student.admission_date else 'N/A' }}</p>
+            </div>
+        </div>
+        {% if student.address %}
+        <p><strong>Address:</strong> {{ student.address }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Attendance Summary</div>
+    <div class="card-body">
+        {% if attendance %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Total Classes</th>
+                    <th>Attended</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in attendance %}
+                <tr>
+                    <td>{{ a.subject.name if a.subject else 'N/A' }}</td>
+                    <td>{{ a.total_classes }}</td>
+                    <td>{{ a.attended }}</td>
+                    <td>
+                        <span class="badge badge-{% if a.percentage >= 75 %}success{% elif a.percentage >= 65 %}warning{% else %}danger{% endif %}">
+                            {{ "%.1f"|format(a.percentage) }}%
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No attendance records.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Fee Status</div>
+    <div class="card-body">
+        {% if fees %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fee Type</th>
+                    <th>Amount Due</th>
+                    <th>Amount Paid</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fee in fees %}
+                <tr>
+                    <td>{{ fee.fee_structure.fee_type|title }}</td>
+                    <td>₹{{ "%.2f"|format(fee.amount_due) }}</td>
+                    <td>₹{{ "%.2f"|format(fee.amount_paid) }}</td>
+                    <td>
+                        <span class="badge badge-{% if fee.payment_status == 'paid' %}success{% elif fee.payment_status == 'partial' %}warning{% else %}danger{% endif %}">
+                            {{ fee.payment_status|title }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No fee records.</p>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{{ url_for('students.list') }}" class="btn btn-secondary">Back to List</a>
+{% endblock %}

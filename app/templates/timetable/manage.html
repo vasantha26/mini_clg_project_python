@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Timetable - College Management System{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-3">
+    <h1>Manage Timetable</h1>
+    <a href="{{ url_for('timetable.create') }}" class="btn btn-primary">Add Entry</a>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" class="flex gap-2">
+            <select name="department_id" class="form-control" style="max-width: 150px;">
+                <option value="">All Departments</option>
+                {% for dept in departments %}
+                <option value="{{ dept.id }}" {% if request.args.get('department_id')|int == dept.id %}selected{% endif %}>
+                    {{ dept.name }}
+                </option>
+                {% endfor %}
+            </select>
+            <select name="year" class="form-control" style="max-width: 100px;">
+                <option value="">All Years</option>
+                {% for y in [1, 2, 3, 4] %}
+                <option value="{{ y }}" {% if request.args.get('year')|int == y %}selected{% endif %}>Year {{ y }}</option>
+                {% endfor %}
+            </select>
+            <select name="section" class="form-control" style="max-width: 100px;">
+                <option value="">All Sections</option>
+                {% for s in ['A', 'B', 'C'] %}
+                <option value="{{ s }}" {% if request.args.get('section') == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if entries %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Period</th>
+                        <th>Department</th>
+                        <th>Year/Section</th>
+                        <th>Subject</th>
+                        <th>Staff</th>
+                        <th>Room</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>{{ ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][entry.day_of_week] }}</td>
+                        <td>Period {{ entry.period }}</td>
+                        <td>{{ entry.department.name if entry.department else 'N/A' }}</td>
+                        <td>Year {{ entry.year }} - {{ entry.section }}</td>
+                        <td>{{ entry.subject.name if entry.subject else 'N/A' }}</td>
+                        <td>{{ entry.staff.name if entry.staff else 'N/A' }}</td>
+                        <td>{{ entry.room or 'TBA' }}</td>
+                        <td>
+                            <a href="{{ url_for('timetable.delete', id=entry.id) }}"
+                               class="btn btn-sm btn-danger"
+                               data-confirm="Are you sure you want to delete this entry?">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No timetable entries found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

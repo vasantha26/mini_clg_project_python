@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Assigned Complaints - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Academic Complaints</h1>
+
+<div class="card">
+    <div class="card-body">
+        {% if complaints %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Student</th>
+                        <th>Subject</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ complaint.created_at.strftime('%d %b %Y') }}</td>
+                        <td>{{ complaint.student.name }}</td>
+                        <td>{{ complaint.subject }}</td>
+                        <td>
+                            <span class="badge badge-{% if complaint.priority == 'high' %}danger{% elif complaint.priority == 'low' %}info{% else %}warning{% endif %}">
+                                {{ complaint.priority|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge badge-{% if complaint.status == 'resolved' %}success{% elif complaint.status == 'pending' %}warning{% else %}info{% endif %}">
+                                {{ complaint.status|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('complaints.detail', id=complaint.id) }}" class="btn btn-sm btn-primary">Respond</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No academic complaints to review.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

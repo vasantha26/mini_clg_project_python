@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Mark Attendance - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Mark Attendance - {{ session.subject.name }}
+        <span class="badge badge-info">{{ session.date.strftime('%d %b %Y') }} | Period {{ session.period }}</span>
+    </div>
+    <div class="card-body">
+        <p><strong>Year:</strong> {{ session.year }} | <strong>Section:</strong> {{ session.section }}</p>
+
+        <form method="POST" action="{{ url_for('attendance.mark', session_id=session.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="flex-between mb-3">
+                <label>
+                    <input type="checkbox" id="select-all"> Select All Present
+                </label>
+                <div>
+                    <span class="badge badge-success">Present: <span id="present-count">0</span></span>
+                    <span class="badge badge-danger">Absent: <span id="absent-count">{{ students|length }}</span></span>
+                </div>
+            </div>
+
+            <div class="attendance-grid">
+                {% for student in students %}
+                <div class="attendance-item {% if existing_records.get(student.id) %}present{% else %}absent{% endif %}">
+                    <input type="checkbox"
+                           class="attendance-checkbox"
+                           name="present"
+                           value="{{ student.id }}"
+                           id="student-{{ student.id }}"
+                           {% if existing_records.get(student.id) %}checked{% endif %}>
+                    <label for="student-{{ student.id }}">
+                        <strong>{{ student.roll_number }}</strong><br>
+                        {{ student.name }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-success">Save Attendance</button>
+                <a href="{{ url_for('attendance.take') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.attendance-checkbox');
+    const presentCount = document.getElementById('present-count');
+    const absentCount = document.getElementById('absent-count');
+    const total = checkboxes.length;
+
+    function updateCounts() {
+        const present = document.querySelectorAll('.attendance-checkbox:checked').length;
+        presentCount.textContent = present;
+        absentCount.textContent = total - present;
+    }
+
+    checkboxes.forEach(function(cb) {
+        cb.addEventListener('change', updateCounts);
+    });
+
+    document.getElementById('select-all').addEventListener('change', function() {
+        checkboxes.forEach(function(cb) {
+            cb.checked = document.getElementById('select-all').checked;
+            const item = cb.closest('.attendance-item');
+            if (cb.checked) {
+                item.classList.add('present');
+                item.classList.remove('absent');
+            } else {
+                item.classList.add('absent');
+                item.classList.remove('present');
+            }
+        });
+        updateCounts();
+    });
+
+    updateCounts();
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}All Feedback - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">All Feedback</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" class="flex gap-2">
+            <select name="type" class="form-control" style="max-width: 150px;">
+                <option value="">All Types</option>
+                <option value="general" {% if type_filter == 'general' %}selected{% endif %}>General</option>
+                <option value="staff" {% if type_filter == 'staff' %}selected{% endif %}>Staff</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url_for('feedback.all') }}" class="btn btn-secondary">Reset</a>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if feedbacks %}
+        {% for feedback in feedbacks %}
+        <div class="notification-item">
+            <div class="notification-content" style="flex: 1;">
+                <div class="flex-between">
+                    <div>
+                        <span class="badge badge-{% if feedback.feedback_type == 'staff' %}primary{% else %}secondary{% endif %}">
+                            {{ feedback.feedback_type|title }}
+                        </span>
+                        {% if feedback.target_staff %}
+                        <small>to {{ feedback.target_staff.name }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="star-rating">
+                        {% for i in range(5) %}
+                        <span class="star {% if i < feedback.rating %}filled{% endif %}">★</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="notification-message mt-1">{{ feedback.content }}</div>
+                <div class="flex-between mt-1">
+                    <div class="notification-time">
+                        {% if feedback.is_anonymous %}
+                        Anonymous
+                        {% else %}
+                        {{ feedback.student.name if feedback.student else 'Unknown' }}
+                        {% endif %}
+                    </div>
+                    <div class="notification-time">{{ feedback.created_at.strftime('%d %b %Y at %H:%M') }}</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center">No feedback found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

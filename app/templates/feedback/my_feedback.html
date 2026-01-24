@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}My Feedback - College Management System{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-3">
+    <h1>My Feedback</h1>
+    <a href="{{ url_for('feedback.submit') }}" class="btn btn-primary">Submit New Feedback</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if feedbacks %}
+        {% for feedback in feedbacks %}
+        <div class="notification-item">
+            <div class="notification-content" style="flex: 1;">
+                <div class="flex-between">
+                    <div>
+                        <span class="badge badge-{% if feedback.feedback_type == 'staff' %}primary{% else %}secondary{% endif %}">
+                            {{ feedback.feedback_type|title }}
+                        </span>
+                        {% if feedback.target_staff %}
+                        <small>to {{ feedback.target_staff.name }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="star-rating">
+                        {% for i in range(5) %}
+                        <span class="star {% if i < feedback.rating %}filled{% endif %}">★</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="notification-message mt-1">{{ feedback.content }}</div>
+                <div class="notification-time">{{ feedback.created_at.strftime('%d %b %Y at %H:%M') }}</div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center">You haven't submitted any feedback yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

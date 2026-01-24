@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ notice.title }} - College Management System{% endblock %}
+
+{% block content %}
+<div class="card {% if notice.priority == 'urgent' %}priority-urgent{% elif notice.priority == 'high' %}priority-high{% endif %}">
+    <div class="card-header flex-between">
+        <span>{{ notice.title }}</span>
+        <div>
+            <span class="badge badge-info">{{ notice.category|title }}</span>
+            {% if notice.priority in ['high', 'urgent'] %}
+            <span class="badge badge-{% if notice.priority == 'urgent' %}danger{% else %}warning{% endif %}">
+                {{ notice.priority|title }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="notice-content">
+            {{ notice.content|safe }}
+        </div>
+
+        <hr>
+
+        <div class="flex-between">
+            <div>
+                <p><strong>Posted by:</strong> {{ notice.posted_by_user.name if notice.posted_by_user else 'Management' }}</p>
+                <p><strong>Posted on:</strong> {{ notice.created_at.strftime('%d %b %Y at %H:%M') }}</p>
+                {% if notice.expiry_date %}
+                <p><strong>Expires on:</strong> {{ notice.expiry_date.strftime('%d %b %Y') }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <button class="btn btn-secondary" data-print>Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('notices.index') }}" class="btn btn-secondary mt-3">Back to Notices</a>
+{% endblock %}

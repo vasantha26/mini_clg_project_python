@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Fee Structure - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Fee Structure Management</h1>
+
+<div class="dashboard-grid">
+    <div class="card">
+        <div class="card-header">Create New Fee Structure</div>
+        <div class="card-body">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.academic_year.label }}
+                    {{ form.academic_year(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.year.label }}
+                    {{ form.year(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.department_id.label }}
+                    {{ form.department_id(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.fee_type.label }}
+                    {{ form.fee_type(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.amount.label }}
+                    {{ form.amount(class="form-control", placeholder="Enter amount") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.due_date.label }}
+                    {{ form.due_date(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.description.label }}
+                    {{ form.description(class="form-control", rows=2) }}
+                </div>
+
+                {{ form.submit(class="btn btn-primary") }}
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Quick Actions</div>
+        <div class="card-body">
+            <a href="{{ url_for('fees.upload') }}" class="btn btn-success mb-2" style="width: 100%;">Assign Fees to Students</a>
+            <a href="{{ url_for('fees.pending_report') }}" class="btn btn-warning mb-2" style="width: 100%;">View Pending Fees Report</a>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">Existing Fee Structures</div>
+    <div class="card-body">
+        {% if fee_structures %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Academic Year</th>
+                        <th>Year</th>
+                        <th>Department</th>
+                        <th>Fee Type</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in fee_structures %}
+                    <tr>
+                        <td>{{ fee.academic_year }}</td>
+                        <td>Year {{ fee.year }}</td>
+                        <td>{{ fee.department.name if fee.department else 'All' }}</td>
+                        <td>{{ fee.fee_type|title }}</td>
+                        <td>₹{{ "%.2f"|format(fee.amount) }}</td>
+                        <td>{{ fee.due_date.strftime('%d %b %Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No fee structures created yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

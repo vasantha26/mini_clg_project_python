@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Marks Reports - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Marks Reports</h1>
+
+{% if exams %}
+{% for exam in exams %}
+<div class="card mb-3">
+    <div class="card-header flex-between">
+        <span>{{ exam.name }} - {{ exam.subject.name }}</span>
+        <span class="badge badge-info">{{ exam.exam_type|title }}</span>
+    </div>
+    <div class="card-body">
+        <p><strong>Year:</strong> {{ exam.year }} | <strong>Section:</strong> {{ exam.section }} | <strong>Max Marks:</strong> {{ exam.max_marks }}</p>
+
+        {% set marks_list = exam.marks.all() %}
+        {% if marks_list %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Marks</th>
+                    <th>Percentage</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mark in marks_list %}
+                <tr>
+                    <td>{{ mark.student.roll_number }}</td>
+                    <td>{{ mark.student.name }}</td>
+                    <td>{{ mark.marks_obtained if mark.marks_obtained is not none else 'AB' }}</td>
+                    <td>
+                        {% if mark.marks_obtained is not none %}
+                        {{ "%.1f"|format((mark.marks_obtained / exam.max_marks) * 100) }}%
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-{% if mark.grade in ['O', 'A+', 'A'] %}success{% elif mark.grade in ['B+', 'B'] %}info{% elif mark.grade == 'C' %}warning{% else %}danger{% endif %}">
+                            {{ mark.grade }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No marks entered yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card">
+    <div class="card-body text-center">
+        <p>No exams created yet.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

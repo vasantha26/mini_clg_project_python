@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}My Results - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">My Results</h1>
+<p class="mb-3">
+    <strong>{{ student.name }}</strong> | Roll No: {{ student.roll_number }} |
+    Year {{ student.year }} - Section {{ student.section }}
+</p>
+
+{% if results_by_subject %}
+{% for subject_name, marks_list in results_by_subject.items() %}
+<div class="card mb-3">
+    <div class="card-header">{{ subject_name }}</div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Exam</th>
+                    <th>Type</th>
+                    <th>Marks</th>
+                    <th>Max Marks</th>
+                    <th>Percentage</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mark in marks_list %}
+                <tr>
+                    <td>{{ mark.exam.name }}</td>
+                    <td><span class="badge badge-info">{{ mark.exam.exam_type|title }}</span></td>
+                    <td>{{ mark.marks_obtained if mark.marks_obtained is not none else 'AB' }}</td>
+                    <td>{{ mark.exam.max_marks }}</td>
+                    <td>
+                        {% if mark.marks_obtained is not none %}
+                        {{ "%.1f"|format((mark.marks_obtained / mark.exam.max_marks) * 100) }}%
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-{% if mark.grade in ['O', 'A+', 'A'] %}success{% elif mark.grade in ['B+', 'B'] %}info{% elif mark.grade == 'C' %}warning{% else %}danger{% endif %}">
+                            {{ mark.grade }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card">
+    <div class="card-body text-center">
+        <p>No results available yet.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

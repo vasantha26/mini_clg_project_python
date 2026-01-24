@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - College Management System{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-3">
+    <h1>Notifications</h1>
+    {% if unread_count > 0 %}
+    <a href="{{ url_for('notifications.mark_all_read') }}" class="btn btn-secondary">Mark All as Read</a>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if notifications %}
+        {% for notification in notifications %}
+        <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+            <div class="notification-icon">
+                {% if notification.notification_type == 'low_attendance' %}
+                📊
+                {% elif notification.notification_type in ['utility_complaint', 'academic_complaint'] %}
+                📝
+                {% elif notification.notification_type in ['staff_feedback', 'general_feedback'] %}
+                ⭐
+                {% elif notification.notification_type == 'new_notice' %}
+                📢
+                {% elif notification.notification_type == 'result_uploaded' %}
+                📋
+                {% else %}
+                🔔
+                {% endif %}
+            </div>
+            <div class="notification-content" style="flex: 1;">
+                <div class="notification-title">{{ notification.title }}</div>
+                <div class="notification-message">{{ notification.message }}</div>
+                <div class="notification-time">{{ notification.created_at.strftime('%d %b %Y at %H:%M') }}</div>
+            </div>
+            {% if not notification.is_read %}
+            <a href="{{ url_for('notifications.mark_read', id=notification.id) }}" class="btn btn-sm btn-secondary">Mark Read</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center">No notifications.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

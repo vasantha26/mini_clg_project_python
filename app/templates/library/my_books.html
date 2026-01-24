@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}My Books - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">My Borrowed Books</h1>
+
+<div class="card">
+    <div class="card-body">
+        {% if issues %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Fine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                    <tr>
+                        <td>{{ issue.book.title }}</td>
+                        <td>{{ issue.book.author }}</td>
+                        <td>{{ issue.issue_date.strftime('%d %b %Y') }}</td>
+                        <td>{{ issue.due_date.strftime('%d %b %Y') }}</td>
+                        <td>
+                            {% if issue.status == 'returned' %}
+                            <span class="badge badge-success">Returned</span>
+                            {% elif issue.status == 'overdue' %}
+                            <span class="badge badge-danger">Overdue</span>
+                            {% else %}
+                            <span class="badge badge-info">Issued</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if issue.fine_amount > 0 %}
+                            <span class="badge badge-danger">₹{{ "%.2f"|format(issue.fine_amount) }}</span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">You have no borrowed books.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('library.search') }}" class="btn btn-primary">Search Books</a>
+    <a href="{{ url_for('library.availability') }}" class="btn btn-secondary">View Available Books</a>
+</div>
+{% endblock %}

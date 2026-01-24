@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Add Timetable Entry - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Add Timetable Entry</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    {{ form.department_id.label }}
+                    {{ form.department_id(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.year.label }}
+                    {{ form.year(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.section.label }}
+                    {{ form.section(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.day_of_week.label }}
+                    {{ form.day_of_week(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.period.label }}
+                    {{ form.period(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.subject_id.label }}
+                    {{ form.subject_id(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.staff_id.label }}
+                    {{ form.staff_id(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.room.label }}
+                    {{ form.room(class="form-control", placeholder="e.g., Room 101") }}
+                </div>
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('timetable.manage') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

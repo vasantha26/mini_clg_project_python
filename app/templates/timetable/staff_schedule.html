@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}My Schedule - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">My Schedule</h1>
+<p class="mb-3">
+    <strong>{{ staff.name }}</strong> |
+    {{ staff.department.name if staff.department else 'N/A' }}
+</p>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        {% for i in range(1, 9) %}
+                        <th class="text-center">Period {{ i }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day_num in range(6) %}
+                    <tr>
+                        <td><strong>{{ ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day_num] }}</strong></td>
+                        {% for period in range(1, 9) %}
+                        <td class="text-center">
+                            {% set entry = None %}
+                            {% for e in days[day_num] if e.period == period %}
+                                {% set entry = e %}
+                            {% endfor %}
+                            {% if entry %}
+                            <div class="timetable-cell">
+                                <strong>{{ entry.subject.code if entry.subject else 'N/A' }}</strong><br>
+                                <small>Yr {{ entry.year }}-{{ entry.section }}</small><br>
+                                <small>{{ entry.room or '' }}</small>
+                            </div>
+                            {% else %}
+                            <div class="timetable-cell">-</div>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-secondary mt-2" data-print>Print Schedule</button>
+<a href="{{ url_for('timetable.manage') }}" class="btn btn-primary mt-2">Manage Timetable</a>
+{% endblock %}

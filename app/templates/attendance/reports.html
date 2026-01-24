@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Reports - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Attendance Reports</div>
+    <div class="card-body">
+        <form method="GET" class="flex gap-2 mb-3">
+            <select name="subject_id" class="form-control" style="max-width: 200px;">
+                <option value="">All Subjects</option>
+                {% for subject in subjects %}
+                <option value="{{ subject.id }}" {% if request.args.get('subject_id')|int == subject.id %}selected{% endif %}>
+                    {{ subject.name }}
+                </option>
+                {% endfor %}
+            </select>
+            <select name="year" class="form-control" style="max-width: 150px;">
+                <option value="">All Years</option>
+                {% for y in [1, 2, 3, 4] %}
+                <option value="{{ y }}" {% if request.args.get('year')|int == y %}selected{% endif %}>Year {{ y }}</option>
+                {% endfor %}
+            </select>
+            <select name="section" class="form-control" style="max-width: 150px;">
+                <option value="">All Sections</option>
+                {% for s in ['A', 'B', 'C'] %}
+                <option value="{{ s }}" {% if request.args.get('section') == s %}selected{% endif %}>Section {{ s }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+
+        {% if sessions %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Subject</th>
+                        <th>Period</th>
+                        <th>Year/Section</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in sessions %}
+                    {% set present = session.records.filter_by(is_present=True).count() %}
+                    {% set total = session.records.count() %}
+                    <tr>
+                        <td>{{ session.date.strftime('%d %b %Y') }}</td>
+                        <td>{{ session.subject.name }}</td>
+                        <td>Period {{ session.period }}</td>
+                        <td>Year {{ session.year }} - {{ session.section }}</td>
+                        <td><span class="badge badge-success">{{ present }}</span></td>
+                        <td><span class="badge badge-danger">{{ total - present }}</span></td>
+                        <td>
+                            <a href="{{ url_for('attendance.mark', session_id=session.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No attendance sessions found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{{ url_for('attendance.take') }}" class="btn btn-primary mt-2">Take New Attendance</a>
+{% endblock %}

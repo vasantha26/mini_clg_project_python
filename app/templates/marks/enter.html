@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Enter Marks - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Enter Marks - {{ exam.name }}
+        <span class="badge badge-info">{{ exam.subject.name }} | Max: {{ exam.max_marks }}</span>
+    </div>
+    <div class="card-body">
+        <p><strong>Year:</strong> {{ exam.year }} | <strong>Section:</strong> {{ exam.section }} | <strong>Type:</strong> {{ exam.exam_type|title }}</p>
+
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Roll Number</th>
+                            <th>Name</th>
+                            <th>Marks (out of {{ exam.max_marks }})</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        {% set mark = existing_marks.get(student.id) %}
+                        <tr>
+                            <td>{{ student.roll_number }}</td>
+                            <td>{{ student.name }}</td>
+                            <td>
+                                <input type="number"
+                                       name="marks_{{ student.id }}"
+                                       class="form-control"
+                                       style="max-width: 100px;"
+                                       min="0"
+                                       max="{{ exam.max_marks }}"
+                                       step="0.5"
+                                       value="{{ mark.marks_obtained if mark else '' }}"
+                                       placeholder="0">
+                            </td>
+                            <td>
+                                {% if mark and mark.grade %}
+                                <span class="badge badge-{% if mark.grade in ['O', 'A+', 'A'] %}success{% elif mark.grade in ['B+', 'B'] %}info{% elif mark.grade == 'C' %}warning{% else %}danger{% endif %}">
+                                    {{ mark.grade }}
+                                </span>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="submit" class="btn btn-success">Save Marks</button>
+            <a href="{{ url_for('marks.manage') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

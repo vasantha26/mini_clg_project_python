@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Library Search - College Management System{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Library Search</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" class="flex gap-2">
+            <input type="text" name="q" class="form-control" placeholder="Search by title, author, or ISBN..."
+                   value="{{ query }}" style="flex: 1;">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+{% if query %}
+<div class="card">
+    <div class="card-header">Search Results for "{{ query }}"</div>
+    <div class="card-body">
+        {% if books %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Category</th>
+                        <th>Available</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.category or 'N/A' }}</td>
+                        <td>
+                            {% if book.available_copies > 0 %}
+                            <span class="badge badge-success">{{ book.available_copies }}/{{ book.total_copies }}</span>
+                            {% else %}
+                            <span class="badge badge-danger">Not Available</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ book.location or 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No books found matching your search.</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<div class="mt-3">
+    <a href="{{ url_for('library.availability') }}" class="btn btn-secondary">View Available Books</a>
+</div>
+{% endblock %}
