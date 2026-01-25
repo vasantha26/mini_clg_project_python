@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Create Subject - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Create New Subject - {{ department.name }}</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <p class="text-muted">Department: <strong>{{ department.name }}</strong> (inherited from your department)</p>
+
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    {{ form.code.label }}
+                    {{ form.code(class="form-control", placeholder="e.g., CS101") }}
+                    {% for error in form.code.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-control", placeholder="e.g., Data Structures") }}
+                    {% for error in form.name.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.year.label }}
+                    {{ form.year(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.semester.label }}
+                    {{ form.semester(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.credits.label }}
+                    {{ form.credits(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check mt-4">
+                        {{ form.is_lab(class="form-check-input") }}
+                        {{ form.is_lab.label(class="form-check-label") }}
+                    </div>
+                </div>
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('usermanagement.subject_list') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

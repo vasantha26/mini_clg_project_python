@@ -25,6 +25,7 @@ def create_app(config_class=Config):
     from .blueprints.timetable import bp as timetable_bp
     from .blueprints.students import bp as students_bp
     from .blueprints.notifications import bp as notifications_bp
+    from .blueprints.usermanagement import bp as usermanagement_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
@@ -38,6 +39,7 @@ def create_app(config_class=Config):
     app.register_blueprint(timetable_bp, url_prefix='/timetable')
     app.register_blueprint(students_bp, url_prefix='/students')
     app.register_blueprint(notifications_bp, url_prefix='/notifications')
+    app.register_blueprint(usermanagement_bp, url_prefix='/manage')
 
     # Create database tables
     with app.app_context():

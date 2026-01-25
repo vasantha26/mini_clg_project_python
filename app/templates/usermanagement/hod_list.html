@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}HOD List - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span>Head of Departments</span>
+        <a href="{{ url_for('usermanagement.create_hod') }}" class="btn btn-primary">+ Add HOD</a>
+    </div>
+    <div class="card-body">
+        {% if hods %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Qualification</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hod in hods %}
+                <tr>
+                    <td>{{ hod.staff.employee_id }}</td>
+                    <td>{{ hod.staff.name }}</td>
+                    <td>{{ hod.staff.department.name }}</td>
+                    <td>{{ hod.email }}</td>
+                    <td>{{ hod.staff.phone or '-' }}</td>
+                    <td>{{ hod.staff.qualification or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No HODs found. Click "Add HOD" to create one.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

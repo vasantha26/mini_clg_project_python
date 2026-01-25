@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Subject List - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span>Subjects - {{ current_user.staff.department.name }}</span>
+        <a href="{{ url_for('usermanagement.create_subject') }}" class="btn btn-primary">+ Add Subject</a>
+    </div>
+    <div class="card-body">
+        {% if subjects %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Year</th>
+                    <th>Semester</th>
+                    <th>Credits</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject in subjects %}
+                <tr>
+                    <td>{{ subject.code }}</td>
+                    <td>{{ subject.name }}</td>
+                    <td>Year {{ subject.year }}</td>
+                    <td>Semester {{ subject.semester }}</td>
+                    <td>{{ subject.credits }}</td>
+                    <td>{{ 'Lab' if subject.is_lab else 'Theory' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No subjects found. Click "Add Subject" to create one.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
