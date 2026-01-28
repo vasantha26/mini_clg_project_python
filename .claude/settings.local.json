@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: College Smart Utility and Academic Management System\n\nFeatures:\n- Flask + Jinja2 + SQLite architecture\n- Role-based access \\(Student, Staff, HOD, Management\\)\n- Modules: Authentication, Attendance, Marks, Fees, Library,\n  Complaints, Feedback, Notices, Timetable, Students, Notifications\n- Auto notifications for low attendance, complaints, feedback\n- Responsive UI with CSS styling\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(pip install:*)",
+      "Bash(start \"\" \"d:\\\\backend_new\\\\College_Management_System.pptx\")",
+      "Bash(git remote add:*)"
+    ]
+  }
+}
