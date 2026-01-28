@@ -22,7 +22,6 @@ class Complaint(db.Model):
                                 cascade='all, delete-orphan')
     assigned_staff = db.relationship('Staff', backref='assigned_complaints')
 
-
 class ComplaintResponse(db.Model):
     __tablename__ = 'complaint_responses'
 
