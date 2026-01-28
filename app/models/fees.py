@@ -9,7 +9,7 @@ class FeeStructure(db.Model):
     academic_year = db.Column(db.String(10), nullable=False)  # 2024-25
     year = db.Column(db.Integer, nullable=False)  # Student year 1, 2, 3, 4
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=True)
-    fee_type = db.Column(db.String(50), nullable=False)  # tuition, exam, library, lab
+    fee_type = db.Column(db.String(50), nullable=True)  # Optional fee type
     amount = db.Column(db.Float, nullable=False)
     due_date = db.Column(db.Date, nullable=False)
     description = db.Column(db.String(200))

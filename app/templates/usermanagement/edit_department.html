@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Department - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Edit Department: {{ department.name }}</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    {{ form.code.label }}
+                    {{ form.code(class="form-control") }}
+                    {% for error in form.code.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-control") }}
+                    {% for error in form.name.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('usermanagement.department_list') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Student List - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Student List</div>
+    <div class="card-body">
+        {% if students %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Name</th>
+                        <th>Year</th>
+                        <th>Semester</th>
+                        <th>Section</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.roll_number }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>Year {{ student.year }}</td>
+                        <td>Sem {{ student.semester }}</td>
+                        <td>{{ student.section }}</td>
+                        <td>{{ student.phone or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No students found in your department.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

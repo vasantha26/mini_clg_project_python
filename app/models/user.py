@@ -61,6 +61,7 @@ class Student(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, unique=True)
     roll_number = db.Column(db.String(20), unique=True, nullable=False, index=True)
     name = db.Column(db.String(100), nullable=False)
+    date_of_birth = db.Column(db.Date, nullable=False)  # For student login
     year = db.Column(db.Integer, nullable=False)  # 1, 2, 3, 4
     semester = db.Column(db.Integer, nullable=False)  # 1-8
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=False)

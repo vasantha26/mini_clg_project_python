@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, DateField, IntegerField, SubmitField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms import SelectField, DateField, IntegerField, StringField, SubmitField
+from wtforms.validators import DataRequired, NumberRange, Length
 from datetime import date
 
 
@@ -11,7 +11,5 @@ class AttendanceSessionForm(FlaskForm):
     year = SelectField('Year', coerce=int, choices=[
         (1, '1st Year'), (2, '2nd Year'), (3, '3rd Year'), (4, '4th Year')
     ], validators=[DataRequired()])
-    section = SelectField('Section', choices=[
-        ('A', 'Section A'), ('B', 'Section B'), ('C', 'Section C')
-    ], validators=[DataRequired()])
+    section = StringField('Section', validators=[DataRequired(), Length(max=10)])
     submit = SubmitField('Create Session')

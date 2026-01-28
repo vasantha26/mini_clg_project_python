@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Edit HOD - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Edit HOD: {{ hod.staff.name }}</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <h4 class="mb-3">Account Information</h4>
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    {{ form.username.label }}
+                    {{ form.username(class="form-control") }}
+                    {% for error in form.username.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class="form-control") }}
+                    {% for error in form.email.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.password.label }}
+                    {{ form.password(class="form-control", placeholder="Leave blank to keep current password") }}
+                    {% for error in form.password.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <h4 class="mb-3 mt-3">HOD Information</h4>
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    {{ form.employee_id.label }}
+                    {{ form.employee_id(class="form-control") }}
+                    {% for error in form.employee_id.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-control") }}
+                    {% for error in form.name.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.department_id.label }}
+                    {{ form.department_id(class="form-control") }}
+                    {% for error in form.department_id.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.designation.label }}
+                    {{ form.designation(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.phone.label }}
+                    {{ form.phone(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.qualification.label }}
+                    {{ form.qualification(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.joining_date.label }}
+                    {{ form.joining_date(class="form-control") }}
+                </div>
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('usermanagement.hod_list') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

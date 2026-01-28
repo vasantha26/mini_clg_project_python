@@ -25,12 +25,7 @@
                 <option value="{{ y }}" {% if request.args.get('year')|int == y %}selected{% endif %}>Year {{ y }}</option>
                 {% endfor %}
             </select>
-            <select name="section" class="form-control" style="max-width: 100px;">
-                <option value="">All Sections</option>
-                {% for s in ['A', 'B', 'C'] %}
-                <option value="{{ s }}" {% if request.args.get('section') == s %}selected{% endif %}>{{ s }}</option>
-                {% endfor %}
-            </select>
+            <input type="text" name="section" class="form-control" placeholder="Section" style="max-width: 100px;" value="{{ request.args.get('section', '') }}">
             <button type="submit" class="btn btn-primary">Filter</button>
         </form>
     </div>

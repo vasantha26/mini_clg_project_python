@@ -26,8 +26,8 @@
             <li><a href="{{ url_for('feedback.my_feedback') }}">Feedback</a></li>
             {% endif %}
 
-            {% if current_user.is_staff() %}
-            <li><a href="{{ url_for('attendance.take') }}">Attendance</a></li>
+            {% if current_user.is_staff() and not current_user.is_hod() %}
+            <li><a href="{{ url_for('attendance.reports') }}">Attendance</a></li>
             <li><a href="{{ url_for('marks.manage') }}">Marks</a></li>
             <li><a href="{{ url_for('students.list') }}">Students</a></li>
             <li><a href="{{ url_for('usermanagement.subject_list') }}">Subjects</a></li>
@@ -38,14 +38,17 @@
 
             {% if current_user.is_hod() %}
             <li><a href="{{ url_for('usermanagement.staff_list') }}">Manage Staff</a></li>
+            <li><a href="{{ url_for('usermanagement.assignment_list') }}">Staff Assign</a></li>
+            <li><a href="{{ url_for('usermanagement.hod_student_list') }}">Students</a></li>
+            <li><a href="{{ url_for('usermanagement.subject_list') }}">Subjects</a></li>
             {% endif %}
 
             {% if current_user.is_management() %}
+            <li><a href="{{ url_for('usermanagement.department_list') }}">Departments</a></li>
             <li><a href="{{ url_for('usermanagement.hod_list') }}">Manage HODs</a></li>
-            <li><a href="{{ url_for('fees.structure') }}">Fees</a></li>
+            <li><a href="{{ url_for('fees.structure') }}">Fee Structure</a></li>
             <li><a href="{{ url_for('notices.manage') }}">Notices</a></li>
             <li><a href="{{ url_for('complaints.all') }}">Complaints</a></li>
-            <li><a href="{{ url_for('feedback.all') }}">Feedback</a></li>
             <li><a href="{{ url_for('library.manage') }}">Library</a></li>
             {% endif %}
 

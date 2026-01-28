@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Fee - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Edit Fee: {{ student_fee.student.name }}</div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <strong>Student:</strong> {{ student_fee.student.roll_number }} - {{ student_fee.student.name }}<br>
+            <strong>Description:</strong> {{ student_fee.fee_structure.description or '-' }}<br>
+            <strong>Due Date:</strong> {{ student_fee.fee_structure.due_date.strftime('%Y-%m-%d') if student_fee.fee_structure.due_date else '-' }}
+        </div>
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    {{ form.amount_due.label }}
+                    {{ form.amount_due(class="form-control") }}
+                    {% for error in form.amount_due.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.amount_paid.label }}
+                    {{ form.amount_paid(class="form-control") }}
+                    {% for error in form.amount_paid.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form.remarks.label }}
+                {{ form.remarks(class="form-control", rows=2, placeholder="Add remarks or transaction details") }}
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('fees.student_fees_list') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

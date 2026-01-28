@@ -6,15 +6,35 @@
 <div class="card">
     <div class="card-header">Register New Student</div>
     <div class="card-body">
+        <div class="alert alert-info">
+            Students login using <strong>Roll Number</strong> and <strong>Date of Birth</strong> (no password needed)
+        </div>
+
         <form method="POST">
             {{ form.hidden_tag() }}
 
-            <h4 class="mb-3">Account Information</h4>
+            <h4 class="mb-3">Student Information</h4>
             <div class="dashboard-grid">
                 <div class="form-group">
-                    {{ form.username.label }}
-                    {{ form.username(class="form-control", placeholder="Username for login") }}
-                    {% for error in form.username.errors %}
+                    {{ form.roll_number.label }}
+                    {{ form.roll_number(class="form-control", placeholder="e.g., 21CS001") }}
+                    {% for error in form.roll_number.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-control", placeholder="Full name") }}
+                    {% for error in form.name.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.date_of_birth.label }}
+                    {{ form.date_of_birth(class="form-control") }}
+                    {% for error in form.date_of_birth.errors %}
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
                 </div>
@@ -25,27 +45,6 @@
                     {% for error in form.email.errors %}
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
-                </div>
-
-                <div class="form-group">
-                    {{ form.password.label }}
-                    {{ form.password(class="form-control", placeholder="Password (min 6 chars)") }}
-                    {% for error in form.password.errors %}
-                    <div class="error-message">{{ error }}</div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <h4 class="mb-3 mt-3">Student Information</h4>
-            <div class="dashboard-grid">
-                <div class="form-group">
-                    {{ form.roll_number.label }}
-                    {{ form.roll_number(class="form-control", placeholder="e.g., 21CS001") }}
-                </div>
-
-                <div class="form-group">
-                    {{ form.name.label }}
-                    {{ form.name(class="form-control", placeholder="Full name") }}
                 </div>
 
                 <div class="form-group">

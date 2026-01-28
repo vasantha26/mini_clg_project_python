@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Departments - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span>Departments</span>
+        <a href="{{ url_for('usermanagement.create_department') }}" class="btn btn-primary">+ Add Department</a>
+    </div>
+    <div class="card-body">
+        {% if departments %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>HOD</th>
+                    <th>Students</th>
+                    <th>Staff</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dept in departments %}
+                <tr>
+                    <td>{{ dept.code }}</td>
+                    <td>{{ dept.name }}</td>
+                    <td>
+                        {% if dept.hod_id %}
+                            {% set hod = dept.staff_members.filter_by(id=dept.hod_id).first() %}
+                            {{ hod.name if hod else '-' }}
+                        {% else %}
+                            <span class="text-muted">Not Assigned</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ dept.students.count() }}</td>
+                    <td>{{ dept.staff_members.count() }}</td>
+                    <td>
+                        <a href="{{ url_for('usermanagement.edit_department', id=dept.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ url_for('usermanagement.delete_department', id=dept.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this department?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No departments found. Click "Add Department" to create one.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

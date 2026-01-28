@@ -19,10 +19,27 @@ def take():
     form = AttendanceSessionForm()
     staff = current_user.staff
 
-    # Populate subject choices with staff's subjects
+    # Populate subject choices with all subjects
+    all_subjects = Subject.query.all()
     form.subject_id.choices = [
-        (s.id, f'{s.code} - {s.name}') for s in staff.subjects
+        (s.id, f'{s.code} - {s.name}') for s in all_subjects
     ]
+
+    # Get filter parameters for student list
+    filter_year = request.args.get('year', type=int)
+    filter_section = request.args.get('section', '')
+
+    # Get students based on filters
+    students = []
+    if filter_year and filter_section:
+        students = Student.query.filter_by(
+            department_id=staff.department_id,
+            year=filter_year,
+            section=filter_section
+        ).order_by(Student.roll_number).all()
+        # Pre-fill form with filter values
+        form.year.data = filter_year
+        form.section.data = filter_section
 
     if form.validate_on_submit():
         # Check if session already exists
@@ -53,7 +70,7 @@ def take():
         flash('Attendance session created successfully.', 'success')
         return redirect(url_for('attendance.mark', session_id=session.id))
 
-    return render_template('attendance/take.html', form=form)
+    return render_template('attendance/take.html', form=form, students=students)
 
 
 @bp.route('/mark/<int:session_id>', methods=['GET', 'POST'])
@@ -155,29 +172,10 @@ def update_attendance_summary(student_id, subject_id):
 @login_required
 @staff_required
 def reports():
-    """View attendance reports."""
+    """View attendance list."""
     staff = current_user.staff
-
-    # Get filter parameters
-    subject_id = request.args.get('subject_id', type=int)
-    year = request.args.get('year', type=int)
-    section = request.args.get('section')
-
-    # Base query
-    query = AttendanceSession.query.filter_by(staff_id=staff.id)
-
-    if subject_id:
-        query = query.filter_by(subject_id=subject_id)
-    if year:
-        query = query.filter_by(year=year)
-    if section:
-        query = query.filter_by(section=section)
-
-    sessions = query.order_by(AttendanceSession.date.desc()).all()
-
-    return render_template('attendance/reports.html',
-                           sessions=sessions,
-                           subjects=staff.subjects)
+    sessions = AttendanceSession.query.filter_by(staff_id=staff.id).order_by(AttendanceSession.date.desc()).all()
+    return render_template('attendance/reports.html', sessions=sessions)
 
 
 @bp.route('/my-attendance')

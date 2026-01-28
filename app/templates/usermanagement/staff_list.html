@@ -20,6 +20,7 @@
                     <th>Phone</th>
                     <th>Qualification</th>
                     <th>Joining Date</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,13 @@
                     <td>{{ staff.phone or '-' }}</td>
                     <td>{{ staff.qualification or '-' }}</td>
                     <td>{{ staff.joining_date.strftime('%Y-%m-%d') if staff.joining_date else '-' }}</td>
+                    <td>
+                        <a href="{{ url_for('usermanagement.edit_staff', id=staff.user.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ url_for('usermanagement.delete_staff', id=staff.user.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this staff member?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

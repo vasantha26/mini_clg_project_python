@@ -1,3 +1,4 @@
+from datetime import datetime
 from ..extensions import db
 
 
@@ -39,3 +40,26 @@ class Subject(db.Model):
 
     def __repr__(self):
         return f'<Subject {self.code}: {self.name}>'
+
+
+class StaffAssignment(db.Model):
+    __tablename__ = 'staff_assignments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    staff_id = db.Column(db.Integer, db.ForeignKey('staff.id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
+    year = db.Column(db.Integer, nullable=False)  # 1, 2, 3, 4
+    assigned_date = db.Column(db.Date, nullable=False)
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationships
+    staff = db.relationship('Staff', backref='assignments')
+    subject = db.relationship('Subject', backref='assignments')
+
+    __table_args__ = (
+        db.UniqueConstraint('staff_id', 'subject_id', 'year', name='unique_staff_subject_year'),
+    )
+
+    def __repr__(self):
+        return f'<StaffAssignment {self.staff_id} - {self.subject_id}>'

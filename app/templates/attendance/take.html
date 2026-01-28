@@ -4,56 +4,74 @@
 
 {% block content %}
 <div class="card">
-    <div class="card-header">Create Attendance Session</div>
+    <div class="card-header">Take Attendance</div>
     <div class="card-body">
+        <!-- Filter form to load students -->
+        <form method="GET" class="mb-3">
+            <div class="flex gap-2">
+                <select name="year" class="form-control" style="max-width: 150px;" required>
+                    <option value="">Select Year</option>
+                    {% for y in [1, 2, 3, 4] %}
+                    <option value="{{ y }}" {% if request.args.get('year')|int == y %}selected{% endif %}>Year {{ y }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="section" class="form-control" placeholder="Section" style="max-width: 100px;" value="{{ request.args.get('section', '') }}" required>
+                <button type="submit" class="btn btn-primary">Load Students</button>
+            </div>
+        </form>
+
+        {% if students %}
+        <!-- Attendance form -->
         <form method="POST" action="{{ url_for('attendance.take') }}">
             {{ form.hidden_tag() }}
 
-            <div class="dashboard-grid">
+            <div class="dashboard-grid mb-3">
                 <div class="form-group">
                     {{ form.subject_id.label }}
                     {{ form.subject_id(class="form-control") }}
-                    {% for error in form.subject_id.errors %}
-                    <div class="error-message">{{ error }}</div>
-                    {% endfor %}
                 </div>
 
                 <div class="form-group">
                     {{ form.date.label }}
                     {{ form.date(class="form-control") }}
-                    {% for error in form.date.errors %}
-                    <div class="error-message">{{ error }}</div>
-                    {% endfor %}
                 </div>
 
                 <div class="form-group">
                     {{ form.period.label }}
                     {{ form.period(class="form-control", min=1, max=8) }}
-                    {% for error in form.period.errors %}
-                    <div class="error-message">{{ error }}</div>
-                    {% endfor %}
                 </div>
 
-                <div class="form-group">
-                    {{ form.year.label }}
-                    {{ form.year(class="form-control") }}
-                    {% for error in form.year.errors %}
-                    <div class="error-message">{{ error }}</div>
-                    {% endfor %}
-                </div>
+                <input type="hidden" name="year" value="{{ request.args.get('year') }}">
+                <input type="hidden" name="section" value="{{ request.args.get('section') }}">
+            </div>
 
-                <div class="form-group">
-                    {{ form.section.label }}
-                    {{ form.section(class="form-control") }}
-                    {% for error in form.section.errors %}
-                    <div class="error-message">{{ error }}</div>
-                    {% endfor %}
-                </div>
+            <h4>Students ({{ students|length }})</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Name</th>
+                            <th>Year/Section</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.roll_number }}</td>
+                            <td>{{ student.name }}</td>
+                            <td>Year {{ student.year }} - {{ student.section }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
             {{ form.submit(class="btn btn-primary") }}
-            <a href="{{ url_for('attendance.reports') }}" class="btn btn-secondary">View Reports</a>
         </form>
+        {% else %}
+        <p class="text-muted">Select Year and Section, then click "Load Students" to view student list.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

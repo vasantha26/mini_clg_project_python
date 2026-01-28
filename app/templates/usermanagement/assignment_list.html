@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Staff Assignments - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span>Staff Assignments</span>
+        <a href="{{ url_for('usermanagement.create_assignment') }}" class="btn btn-primary btn-sm">+ Add Assignment</a>
+    </div>
+    <div class="card-body">
+        {% if assignments %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Staff Name</th>
+                        <th>Subject</th>
+                        <th>Year</th>
+                        <th>Assigned Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignment in assignments %}
+                    <tr>
+                        <td>{{ assignment.staff.name }}</td>
+                        <td>{{ assignment.subject.code }} - {{ assignment.subject.name }}</td>
+                        <td>Year {{ assignment.year }}</td>
+                        <td>{{ assignment.assigned_date.strftime('%d %b %Y') }}</td>
+                        <td>
+                            <a href="{{ url_for('usermanagement.edit_assignment', id=assignment.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                            <form action="{{ url_for('usermanagement.delete_assignment', id=assignment.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this assignment?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No staff assignments found. Click "+ Add Assignment" to create one.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

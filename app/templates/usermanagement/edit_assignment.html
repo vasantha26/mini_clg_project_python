@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Staff Assignment - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Edit Staff Assignment</div>
+    <div class="card-body">
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    <label>Staff</label>
+                    <select name="staff_id" class="form-control" required>
+                        <option value="">Select Staff</option>
+                        {% for staff in staff_members %}
+                        <option value="{{ staff.id }}" {{ 'selected' if staff.id == assignment.staff_id }}>{{ staff.name }} ({{ staff.employee_id }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Subject</label>
+                    <select name="subject_id" class="form-control" required>
+                        <option value="">Select Subject</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}" {{ 'selected' if subject.id == assignment.subject_id }}>{{ subject.code }} - {{ subject.name }} (Year {{ subject.year }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Year</label>
+                    <select name="year" class="form-control" required>
+                        <option value="">Select Year</option>
+                        <option value="1" {{ 'selected' if assignment.year == 1 }}>1st Year</option>
+                        <option value="2" {{ 'selected' if assignment.year == 2 }}>2nd Year</option>
+                        <option value="3" {{ 'selected' if assignment.year == 3 }}>3rd Year</option>
+                        <option value="4" {{ 'selected' if assignment.year == 4 }}>4th Year</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Assigned Date</label>
+                    <input type="date" name="assigned_date" class="form-control" required value="{{ assignment.assigned_date.strftime('%Y-%m-%d') }}">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Assignment</button>
+            <a href="{{ url_for('usermanagement.assignment_list') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

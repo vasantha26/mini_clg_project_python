@@ -5,27 +5,6 @@
 {% block content %}
 <h1 class="mb-3">All Complaints</h1>
 
-<div class="card mb-3">
-    <div class="card-body">
-        <form method="GET" class="flex gap-2">
-            <select name="type" class="form-control" style="max-width: 150px;">
-                <option value="">All Types</option>
-                <option value="utility" {% if type_filter == 'utility' %}selected{% endif %}>Utility</option>
-                <option value="academic" {% if type_filter == 'academic' %}selected{% endif %}>Academic</option>
-            </select>
-            <select name="status" class="form-control" style="max-width: 150px;">
-                <option value="">All Status</option>
-                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
-                <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
-                <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
-                <option value="closed" {% if status_filter == 'closed' %}selected{% endif %}>Closed</option>
-            </select>
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a href="{{ url_for('complaints.all') }}" class="btn btn-secondary">Reset</a>
-        </form>
-    </div>
-</div>
-
 <div class="card">
     <div class="card-body">
         {% if complaints %}

@@ -19,6 +19,7 @@
                     <th>Semester</th>
                     <th>Credits</th>
                     <th>Type</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +31,13 @@
                     <td>Semester {{ subject.semester }}</td>
                     <td>{{ subject.credits }}</td>
                     <td>{{ 'Lab' if subject.is_lab else 'Theory' }}</td>
+                    <td>
+                        <a href="{{ url_for('usermanagement.edit_subject', id=subject.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ url_for('usermanagement.delete_subject', id=subject.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this subject?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

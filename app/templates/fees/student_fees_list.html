@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Student Fees - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span>Student Fees</span>
+        <div>
+            <a href="{{ url_for('fees.add_single') }}" class="btn btn-primary btn-sm">+ Add Single</a>
+            <a href="{{ url_for('fees.add_multiple') }}" class="btn btn-primary btn-sm">+ Add Multiple</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Filters -->
+        <form method="GET" class="mb-3">
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    <label>Department</label>
+                    <select name="department_id" class="form-control" onchange="this.form.submit()">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}" {{ 'selected' if request.args.get('department_id')|int == dept.id }}>{{ dept.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" class="form-control" onchange="this.form.submit()">
+                        <option value="">All Status</option>
+                        <option value="pending" {{ 'selected' if request.args.get('status') == 'pending' }}>Pending</option>
+                        <option value="partial" {{ 'selected' if request.args.get('status') == 'partial' }}>Partial</option>
+                        <option value="paid" {{ 'selected' if request.args.get('status') == 'paid' }}>Paid</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <a href="{{ url_for('fees.student_fees_list') }}" class="btn btn-secondary btn-block">Clear Filters</a>
+                </div>
+            </div>
+        </form>
+
+        {% if fees %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Description</th>
+                    <th>Amount Due</th>
+                    <th>Amount Paid</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fee in fees %}
+                <tr>
+                    <td>{{ fee.student.roll_number }}</td>
+                    <td>{{ fee.student.name }}</td>
+                    <td>{{ fee.student.department.name if fee.student.department else '-' }}</td>
+                    <td>{{ fee.fee_structure.description or '-' }}</td>
+                    <td>{{ "%.2f"|format(fee.amount_due) }}</td>
+                    <td>{{ "%.2f"|format(fee.amount_paid) }}</td>
+                    <td>{{ "%.2f"|format(fee.balance) }}</td>
+                    <td>
+                        {% if fee.payment_status == 'paid' %}
+                        <span class="badge badge-success" style="background: green; padding: 3px 8px; border-radius: 3px; color: white;">Paid</span>
+                        {% elif fee.payment_status == 'partial' %}
+                        <span class="badge badge-warning" style="background: orange; padding: 3px 8px; border-radius: 3px; color: white;">Partial</span>
+                        {% else %}
+                        <span class="badge badge-danger" style="background: red; padding: 3px 8px; border-radius: 3px; color: white;">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('fees.edit_student_fee', id=fee.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        {% if fee.payment_status != 'paid' %}
+                        <form action="{{ url_for('fees.mark_paid', id=fee.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Mark as fully paid?');">Pay</button>
+                        </form>
+                        {% endif %}
+                        <form action="{{ url_for('fees.delete_student_fee', id=fee.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this fee?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No fees found. Use "Add Single" or "Add Multiple" to add fees.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
