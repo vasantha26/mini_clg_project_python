@@ -37,14 +37,10 @@ def submit():
         (s.id, s.name) for s in staff_members
     ]
 
-    # Populate subject choices
-    subjects = Subject.query.filter_by(
-        department_id=student.department_id,
-        year=student.year,
-        semester=student.semester
-    ).all()
+    # Populate subject choices - show all subjects
+    subjects = Subject.query.all()
     form.subject_id.choices = [(0, 'Select Subject (Optional)')] + [
-        (s.id, s.name) for s in subjects
+        (s.id, f'{s.code} - {s.name}') for s in subjects
     ]
 
     if form.validate_on_submit():

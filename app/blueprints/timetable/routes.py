@@ -6,7 +6,7 @@ from ...extensions import db
 from ...utils.decorators import staff_required, student_required
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 
 
 class TimetableEntryForm(FlaskForm):
@@ -14,9 +14,7 @@ class TimetableEntryForm(FlaskForm):
     year = SelectField('Year', coerce=int, choices=[
         (1, '1st Year'), (2, '2nd Year'), (3, '3rd Year'), (4, '4th Year')
     ], validators=[DataRequired()])
-    section = SelectField('Section', choices=[
-        ('A', 'Section A'), ('B', 'Section B'), ('C', 'Section C')
-    ], validators=[DataRequired()])
+    section = StringField('Section', validators=[DataRequired(), Length(max=10)])
     day_of_week = SelectField('Day', coerce=int, choices=[
         (0, 'Monday'), (1, 'Tuesday'), (2, 'Wednesday'),
         (3, 'Thursday'), (4, 'Friday'), (5, 'Saturday')

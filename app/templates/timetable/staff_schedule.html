@@ -11,42 +11,43 @@
 
 <div class="card">
     <div class="card-body">
+        {% set has_entries = namespace(value=false) %}
+        {% for day_num in range(6) %}
+            {% if days[day_num]|length > 0 %}
+                {% set has_entries.value = true %}
+            {% endif %}
+        {% endfor %}
+
+        {% if has_entries.value %}
         <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Day</th>
-                        {% for i in range(1, 9) %}
-                        <th class="text-center">Period {{ i }}</th>
-                        {% endfor %}
+                        <th>Period</th>
+                        <th>Subject</th>
+                        <th>Year/Section</th>
+                        <th>Room</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for day_num in range(6) %}
-                    <tr>
-                        <td><strong>{{ ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day_num] }}</strong></td>
-                        {% for period in range(1, 9) %}
-                        <td class="text-center">
-                            {% set entry = None %}
-                            {% for e in days[day_num] if e.period == period %}
-                                {% set entry = e %}
-                            {% endfor %}
-                            {% if entry %}
-                            <div class="timetable-cell">
-                                <strong>{{ entry.subject.code if entry.subject else 'N/A' }}</strong><br>
-                                <small>Yr {{ entry.year }}-{{ entry.section }}</small><br>
-                                <small>{{ entry.room or '' }}</small>
-                            </div>
-                            {% else %}
-                            <div class="timetable-cell">-</div>
-                            {% endif %}
-                        </td>
+                        {% for entry in days[day_num] %}
+                        <tr>
+                            <td><strong>{{ ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][entry.day_of_week] }}</strong></td>
+                            <td>Period {{ entry.period }}</td>
+                            <td>{{ entry.subject.name if entry.subject else 'N/A' }} ({{ entry.subject.code if entry.subject else '' }})</td>
+                            <td>Year {{ entry.year }} - {{ entry.section }}</td>
+                            <td>{{ entry.room or '-' }}</td>
+                        </tr>
                         {% endfor %}
-                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% else %}
+        <p class="text-center">No schedule entries found.</p>
+        {% endif %}
     </div>
 </div>
 

@@ -47,12 +47,9 @@
             <li><a href="{{ url_for('usermanagement.department_list') }}">Departments</a></li>
             <li><a href="{{ url_for('usermanagement.hod_list') }}">Manage HODs</a></li>
             <li><a href="{{ url_for('fees.structure') }}">Fee Structure</a></li>
-            <li><a href="{{ url_for('notices.manage') }}">Notices</a></li>
             <li><a href="{{ url_for('complaints.all') }}">Complaints</a></li>
             <li><a href="{{ url_for('library.manage') }}">Library</a></li>
             {% endif %}
-
-            <li><a href="{{ url_for('notices.index') }}">Notices</a></li>
             <li class="notification-link">
                 <a href="{{ url_for('notifications.index') }}">
                     Notifications
