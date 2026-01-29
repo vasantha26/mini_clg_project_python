@@ -9,7 +9,9 @@
       "Bash(git remote add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)"
     ]
   }
 }
