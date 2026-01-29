@@ -128,6 +128,64 @@ def enter(exam_id):
                            existing_marks=existing_marks)
 
 
+@bp.route('/edit/<int:exam_id>', methods=['GET', 'POST'])
+@login_required
+@staff_required
+def edit_exam(exam_id):
+    """Edit an exam."""
+    exam = Exam.query.get_or_404(exam_id)
+    staff = current_user.staff
+
+    if exam.created_by != staff.id:
+        flash('You do not have permission to edit this exam.', 'danger')
+        return redirect(url_for('marks.manage'))
+
+    form = ExamForm(obj=exam)
+    form.submit.label.text = 'Update Exam'
+
+    # Populate subject choices - all subjects
+    all_subjects = Subject.query.all()
+    form.subject_id.choices = [
+        (s.id, f'{s.code} - {s.name}') for s in all_subjects
+    ]
+
+    if form.validate_on_submit():
+        exam.name = form.name.data
+        exam.exam_type = form.exam_type.data
+        exam.subject_id = form.subject_id.data
+        exam.max_marks = form.max_marks.data
+        exam.date = form.date.data
+        exam.year = form.year.data
+        exam.section = form.section.data
+        db.session.commit()
+
+        flash('Exam updated successfully.', 'success')
+        return redirect(url_for('marks.manage'))
+
+    return render_template('marks/edit_exam.html', form=form, exam=exam)
+
+
+@bp.route('/delete/<int:exam_id>', methods=['POST'])
+@login_required
+@staff_required
+def delete_exam(exam_id):
+    """Delete an exam."""
+    exam = Exam.query.get_or_404(exam_id)
+    staff = current_user.staff
+
+    if exam.created_by != staff.id:
+        flash('You do not have permission to delete this exam.', 'danger')
+        return redirect(url_for('marks.manage'))
+
+    # Delete associated marks first
+    Marks.query.filter_by(exam_id=exam.id).delete()
+    db.session.delete(exam)
+    db.session.commit()
+
+    flash('Exam deleted successfully.', 'success')
+    return redirect(url_for('marks.manage'))
+
+
 @bp.route('/reports')
 @login_required
 @staff_required

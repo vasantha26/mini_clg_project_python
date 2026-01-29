@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Exam - College Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">Edit Exam: {{ exam.name }}</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="dashboard-grid">
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-control", placeholder="e.g., Mid-Term Exam 1") }}
+                    {% for error in form.name.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.exam_type.label }}
+                    {{ form.exam_type(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.subject_id.label }}
+                    {{ form.subject_id(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.max_marks.label }}
+                    {{ form.max_marks(class="form-control", placeholder="e.g., 100") }}
+                    {% for error in form.max_marks.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.date.label }}
+                    {{ form.date(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.year.label }}
+                    {{ form.year(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.section.label }}
+                    {{ form.section(class="form-control") }}
+                </div>
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('marks.manage') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

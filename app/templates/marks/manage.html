@@ -35,6 +35,11 @@
                         <td>{{ exam.date.strftime('%d %b %Y') if exam.date else 'TBA' }}</td>
                         <td>
                             <a href="{{ url_for('marks.enter', exam_id=exam.id) }}" class="btn btn-sm btn-primary">Enter Marks</a>
+                            <a href="{{ url_for('marks.edit_exam', exam_id=exam.id) }}" class="btn btn-sm btn-secondary">Edit</a>
+                            <form method="POST" action="{{ url_for('marks.delete_exam', exam_id=exam.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this exam?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
